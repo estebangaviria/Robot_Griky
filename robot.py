@@ -11,6 +11,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 import requests
 import lxml.html as html
+from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+
 
 
 credenciales_excel = r"D:\PROYECTOS\ROBOT GRIKY\credenciales.xlsx"
@@ -19,15 +26,31 @@ df = pandas.read_excel(credenciales_excel)
 
 user = df["username"][0]
 psw = df["password"][0]
-# url= 'https://global-i.triboolearning.com/analytics/customized/'
-#url = "https://umaplus.uma.edu.pe/analytics/customized/"
-# url= 'https://campus.eanx.io/analytics/customized/'
-#url='https://go.coronaaprende.com/analytics/customized/'
+#url = 'https://autonomadigital.learning-tribes.com/analytics/customized/'
+#url = 'https://campus.clase.edu.co/analytics/customized/'
 url = 'https://campus.class-run.com/analytics/customized/'
-#url = 'https://robinfooduniversity.learning-tribes.com/analytics/customized/'
+#url='https://go.coronaaprende.com/analytics/customized/'
+#url= 'https://campus.eanx.io/analytics/customized/'
 #url = 'https://campus.griky.co/analytics/customized/'
-#url = 'https://cursos.amashop.com.co/analytics/customized/'
-#url = 'https://campus.uisep.one/analytics/customized/'
+#url = 'https://fundacion.holastaffeducacion.com/analytics/customized/'
+
+#url = 'https://isttezeta.learning-tribes.com/analytics/customized/'
+#url = 'https://academiakonfio.learning-tribes.com/analytics/customized/'
+#url = 'https://onconnection.learning-tribes.com/analytics/customized/'
+#url= 'https://global-i.triboolearning.com/analytics/customized/'
+#url = "https://umaplus.uma.edu.pe/analytics/customized/"
+#url = 'https://robinfooduniversity.learning-tribes.com/analytics/customized/'
+#url = 'https://educatubolsillo.learning-tribes.com/analytics/customized/'
+#url = 'https://sura.learning-tribes.com/analytics/customized/'
+
+#url = 'https://click-umecit.learning-tribes.com//analytics/customized/'
+#url = 'https://usap.learning-tribes.com/analytics/customized/'
+#url = 'https://plus.ugb.edu.sv/analytics/customized/'
+#url = 'https://edpplus.triboolearning.com/analytics/customized/'
+
+#url = 'https://campus.griky.co/analytics/customized/' 
+#url = 'https://cursos.amashop.com.co/analytics/customized/' #cablemas
+#url = 'https://campus.uisep.one/analytics/customized/' #ISEP
 
 # Aplicar filtros y descargar
 
@@ -41,13 +64,14 @@ driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(url)
 
+
 # Acciones:
 #driver.find_element(By.CSS_SELECTOR, "#login-form > article > div > div.email-login-link > a").click()
+try:
+    driver.find_element(By.CSS_SELECTOR, "#login-form > article > div > div.email-login-link > a").click()
+except Exception:
+    pass
 
-# try:
-#     driver.find_element(By.CSS_SELECTOR, '#login-form > article > div > div.email-login-link > a').click()
-# except :
-#     print("error-----------------")
 # Login:
 driver.find_element(By.CSS_SELECTOR, "#login-email").send_keys(user)
 # time.sleep(2)
@@ -61,6 +85,9 @@ print(total_cursos)
 
 contador = 1
 incremento = 25
+lim_inf = 10
+lim_sup = 50
+cant_contador = int(lim_sup/5)
 ciclos_descarga = incremento
 contador2 = contador
 ciclos_descarga2 = ciclos_descarga
@@ -81,70 +108,144 @@ for i in range(1, cuenta_filtros + 1):
     ).click()
 
 
-# driver.find_element_by_xpath(check_correo).click()
-
 # Filtros de formato xls
 driver.find_element(By.CSS_SELECTOR, "#format_section").click()
 driver.find_element(
     By.CSS_SELECTOR, "#table-export-selection > li:nth-child(2)"
 ).click()
 
-driver.find_element(By.CSS_SELECTOR, "#course_section").click()
+#driver.find_element(By.CSS_SELECTOR, "#course_section").click()
 print("ciclos de descarga: " + str(ciclos_descarga))
 print("cantidad descargas: " + str(cant_descargas))
 # ------------------------------------------------------------------------
-# driver.execute_script("window.scrollTo(0, 0)")
-# driver.find_element(By.XPATH, nube).click()
-# last_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
-# print("-----------------------------")
-# print(type(last_file))
-# print(last_file)
-# without_files = "No hay informes disponibles"
+driver.execute_script("window.scrollTo(0, 0)")
+driver.find_element(By.XPATH, nube).click()
+last_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
+#last_file = driver.fin
 
-# if without_files == last_file:
-#     while without_files == last_file:
-#         time.sleep(5)
-#         driver.execute_script("window.scrollTo(0, 0)")
-#         driver.find_element(By.XPATH, nube).click()
-#         last_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
-# else:
-#     driver.execute_script("window.scrollTo(0, 0)")
-#     driver.find_element(By.XPATH, nube).click()
-#     last_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
+print("-----------------------------")
+print(type(last_file))
+print(last_file)
 
-# print(last_file)
-# print("-----------------------------")
+without_files = "No hay informes disponibles"
 
+while without_files == last_file or last_file =='':
+    driver.execute_script("window.scrollTo(0, 0)")
+    driver.find_element(By.XPATH, nube).click()
+    
+    try:
+        element = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="report-file-list"]/div[1]'))
+        )
+        last_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
+    except TimeoutException as ex:
+            print(ex.message)
+
+
+
+element_to_hover_over = driver.find_element(By.CSS_SELECTOR, "#main > div > nav > ol > li:nth-child(5)")
+ActionChains(driver).move_to_element(element_to_hover_over).perform()
+
+#------------------------------------------------
+print("-----------------------------")
 # ------------------------------------------------------------------------
+
+
+driver.execute_script("window.scrollTo(0, 0)")
+driver.find_element(By.CSS_SELECTOR, "#course_section").click()
+driver.find_element(By.CSS_SELECTOR, "#course_section_contents > div > div > div.select").click()
+
+
+#----------------------------
+#pendiente ajuste de widget de bienvenida 
 
 # INICIO CICLO 1------------------------------------------------------------------------------------------------------------------
 while contador <= cant_descargas * incremento:
     print("entré en el ciclo")
-    # Filtros de cursos a elegir:
-    driver.find_element(By.CSS_SELECTOR, "#course_section_contents > div > div").click()
 
     while contador <= ciclos_descarga:
-        digitar_cursos = (
-            "#course_section_contents > div > div > div.panel > ul > li:nth-child("
-            + str(contador)
-            + ") > label"
-        )
+        digitar_cursos = ("#course_section_contents > div > div > div.panel > ul > li:nth-child("
+            + str(contador)+ ") > label"   )
         driver.find_element(By.CSS_SELECTOR, digitar_cursos).click()
         contador += 1
     ciclos_descarga += incremento
     #time.sleep(1)
 
     driver.find_element(By.XPATH, aplicar).click()
-    time.sleep(2)
+    time.sleep(3)
     driver.find_element(By.XPATH, '//*[@id="dialog-container"]')
     driver.find_element(By.XPATH, '//*[@id="dialog-container"]/div[1]')
-    driver.find_element(By.XPATH, '//*[@id="dialog-container"]/div[1]/i').click()
+    #driver.find_element(By.XPATH, '//*[@id="dialog-container"]/div[1]/i').click()
 
-    # Borrar cursos seleccionados
+    try:
+        element = WebDriverWait(driver, 2).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="dialog-container"]/div[1]/i'))
+        )
+    except TimeoutException as ex:
+            print(ex.message)
+
+    try: 
+        driver.find_element(By.XPATH, '//*[@id="dialog-container"]/div[1]/i').click()
+    except Exception:
+        time.sleep(3)
+        driver.find_element(By.XPATH, '//*[@id="dialog-container"]/div[1]/i').click()
+
+
+    #--------------------------------------------------------------------------
+    time.sleep(lim_inf)
+    driver.execute_script("window.scrollTo(0, 0)")
+    driver.find_element(By.XPATH, nube).click()
+    
+    try:
+        new_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
+    except Exception:
+        time.sleep(2)
+        new_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
+        
+    #driver.find_element(By.XPATH, '//*[@id="main"]/div/section[2]/div').click()
+    ActionChains(driver).move_to_element(element_to_hover_over).perform()
+    print(new_file)
+    n_contador = 0
+  
+    if new_file != last_file:
+        driver.execute_script("window.scrollTo(0, 0)")
+        driver.find_element(By.XPATH, nube).click()
+        driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]/a').click()
+    else:
+        while new_file == last_file:
+            time.sleep(5)
+            driver.execute_script("window.scrollTo(0, 0)")
+            driver.find_element(By.XPATH, nube).click()
+            try: 
+                new_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
+            except Exception:
+                time.sleep(2)
+                new_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
+
+            #driver.find_element(By.XPATH, '//*[@id="main"]/div/section[2]/div').click()
+            n_contador += 1
+            if n_contador >= cant_contador:
+                break
+        driver.execute_script("window.scrollTo(0, 0)")
+        driver.find_element(By.XPATH, nube).click()
+        driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]/a').click()
+
+        
+    ActionChains(driver).move_to_element(element_to_hover_over).perform()
+    last_file=new_file
+
+# Borrar cursos seleccionados
     driver.execute_script("window.scrollTo(0, 0)")
     # time.sleep(10)
     driver.find_element(By.XPATH, '//*[@id="course_section"]')
-    driver.find_element(By.XPATH, '//*[@id="course_section_contents"]/div/div').click()
+    #time.sleep(1)
+
+    try:
+        driver.find_element(By.XPATH, '//*[@id="course_section_contents"]/div/div').click()
+    except Exception:
+        driver.find_element(By.CSS_SELECTOR, '#course_section').click()
+        driver.find_element(By.XPATH, '//*[@id="course_section_contents"]/div/div').click()
+
 
     while contador2 <= ciclos_descarga2:
         digitar_cursos2 = (
@@ -154,46 +255,11 @@ while contador <= cant_descargas * incremento:
         )
         driver.find_element(By.CSS_SELECTOR, digitar_cursos2).click()
         contador2 += 1
-
-    ciclos_descarga2 += incremento
-#--------------------------------------------------------------------------
-    # driver.execute_script("window.scrollTo(0, 0)")
-    # driver.find_element(By.XPATH, nube).click()
-    # new_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
-    # print(new_file)
-
-    # if without_files == new_file or new_file == "":
-    #     while without_files == new_file:
-    #         time.sleep(5)
-    #         driver.execute_script("window.scrollTo(0, 0)")
-    #         driver.find_element(By.XPATH, nube).click()
-    #         new_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
-    # print(new_file)
-
     
-    # if new_file == last_file:
-    #     while new_file == last_file:
-    #         time.sleep(10)
-    #         driver.execute_script("window.scrollTo(0, 0)")
-    #         driver.find_element(By.XPATH, nube).click()
-    #         new_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
-    #         driver.find_element(By.XPATH, nube).click()
-    # else:
-    #     last_file=new_file
-    #     driver.execute_script("window.scrollTo(0, 0)")
-    #     driver.find_element(By.XPATH, nube).click()
-    #     driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]/a').click()
-
-    # time.sleep(2)
-    # last_file=new_file
-
+    ciclos_descarga2 += incremento
 
 #--------------------------------------------------------------------------
 
-    time.sleep(45)
-    driver.execute_script("window.scrollTo(0, 0)")
-    driver.find_element(By.XPATH, nube).click()
-    driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]/a').click()
 #--------------------------------------------------------------------------
     #print('ultima descarga: '+last_file)
     print("ciclos de descargda: " + str(ciclos_descarga))
@@ -209,9 +275,9 @@ ciclo_final = 1
 print(contador)
 
 if residuo >0:
-    print("entreé en el if")
+    print("entreé en el if2")
     # Filtros de cursos a elegir:
-    driver.find_element(By.CSS_SELECTOR, "#course_section_contents > div > div").click()
+    #driver.find_element(By.CSS_SELECTOR, "#course_section_contents > div > div").click()
 
     while contador <= limite:
         digitar_cursos = (
@@ -229,7 +295,7 @@ if residuo >0:
     driver.find_element(By.XPATH, '//*[@id="dialog-container"]/div[1]/i').click()
 
     driver.execute_script("window.scrollTo(0, 0)")
-    time.sleep(50)
+    time.sleep(lim_sup)
     driver.find_element(By.XPATH, nube).click()
     driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]/a').click()
 

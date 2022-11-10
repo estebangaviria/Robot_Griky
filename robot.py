@@ -27,28 +27,6 @@ def robot(url, incremento, lim_inf, lim_sup):
     user = df["username"][0]
     psw = df["password"][0]
 
-    # Url de instancia a descargar data:
-    #url = 'https://autonomadigital.learning-tribes.com/analytics/customized/'
-    #url = 'https://campus.clase.edu.co/analytics/customized/'
-    #url = 'https://campus.class-run.com/analytics/customized/'
-    #url='https://go.coronaaprende.com/analytics/customized/'
-    #url= 'https://campus.eanx.io/analytics/customized/'
-    #url = 'https://campus.griky.co/analytics/customized/'
-    #url = 'https://fundacion.holastaffeducacion.com/analytics/customized/'
-    #url = 'https://isttezeta.learning-tribes.com/analytics/customized/'
-    #url = 'https://academiakonfio.learning-tribes.com/analytics/customized/'
-    #url = 'https://onconnection.learning-tribes.com/analytics/customized/'
-    #url= 'https://global-i.triboolearning.com/analytics/customized/'
-    #url = "https://umaplus.uma.edu.pe/analytics/customized/"
-    #url = 'https://robinfooduniversity.learning-tribes.com/analytics/customized/'
-    #url = 'https://educatubolsillo.learning-tribes.com/analytics/customized/'
-    #url = 'https://sura.learning-tribes.com/analytics/customized/'
-    #url = 'https://click-umecit.learning-tribes.com//analytics/customized/'
-    #url = 'https://usap.learning-tribes.com/analytics/customized/'
-    #url = 'https://plus.ugb.edu.sv/analytics/customized/'
-    #url = 'https://edpplus.triboolearning.com/analytics/customized/'
-    #url = 'https://cursos.amashop.com.co/analytics/customized/' #cablemas
-    #url = 'https://campus.uisep.one/analytics/customized/' #ISEP
 
     # Aplicar filtros y descargar
     aplicar = '//*[@id="submit-button"]'
@@ -343,7 +321,3 @@ def robot(url, incremento, lim_inf, lim_sup):
     # Cerrar las acciones:
     # driver.quit()
 
-#robot(url='https://campus.eanx.io/login?next=/analytics/customized/', incremento=1, lim_inf=10, lim_sup=40)
-#robot(url='https://go.coronaaprende.com/analytics/customized/', incremento=15, lim_inf=10, lim_sup=450)
-#robot(url='https://campus.class-run.com/analytics/customized/', incremento=25 ,lim_inf=10, lim_sup=80)
-#robot(url='https://campus.eanx.io/analytics/customized/', incremento=8, lim_inf=10, lim_sup=520)

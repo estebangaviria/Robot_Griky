@@ -22,7 +22,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 def robot(url, incremento, lim_inf, lim_sup):
         
     #Lee usuario un contraseña:
-    credenciales_excel = r"C:\ROBOT GRIKY\credenciales.xlsx"
+    credenciales_excel = r"D:\PROYECTOS\ROBOT GRIKY\credenciales.xlsx"
     df = pandas.read_excel(credenciales_excel)
     user = df["username"][0]
     psw = df["password"][0]
@@ -124,7 +124,7 @@ def robot(url, incremento, lim_inf, lim_sup):
 
     driver.find_element(By.CSS_SELECTOR, "#user_properties_section").click()
     # driver.find_element_by_css_selector(selector_correo).click()
-
+    time.sleep(1)
     cuenta_filtros = len(driver.find_elements(By.NAME, "selected_properties"))
     for i in range(1, cuenta_filtros + 1):
         driver.find_element(
@@ -159,6 +159,7 @@ def robot(url, incremento, lim_inf, lim_sup):
     without_files = "No hay informes disponibles"
 
     time.sleep(2)
+    #contador_nube=1
     while without_files == last_file or last_file =='':
         driver.execute_script("window.scrollTo(0, 0)")
         driver.find_element(By.XPATH, nube).click()
@@ -170,6 +171,10 @@ def robot(url, incremento, lim_inf, lim_sup):
             last_file = driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]').text
         except TimeoutException as ex:
                 print(ex.message)
+        #if contador_nube >=10:
+            
+        #    break
+        #contador_nube +=1
 
 
 
@@ -239,7 +244,7 @@ def robot(url, incremento, lim_inf, lim_sup):
         #print(new_file)
         n_contador = 0
 
-        if new_file != last_file:
+        if new_file != last_file and last_file != without_files:
             driver.execute_script("window.scrollTo(0, 0)")
             driver.find_element(By.XPATH, nube).click()
             driver.find_element(By.XPATH, '//*[@id="report-file-list"]/div[1]/a').click()
@@ -340,4 +345,5 @@ def robot(url, incremento, lim_inf, lim_sup):
 
 #robot(url='https://campus.eanx.io/login?next=/analytics/customized/', incremento=1, lim_inf=10, lim_sup=40)
 #robot(url='https://go.coronaaprende.com/analytics/customized/', incremento=15, lim_inf=10, lim_sup=450)
-#robot(url='https://campus.griky.co/analytics/customized/', incremento=20 ,lim_inf=10, lim_sup=45)
+#robot(url='https://campus.class-run.com/analytics/customized/', incremento=25 ,lim_inf=10, lim_sup=80)
+#robot(url='https://campus.eanx.io/analytics/customized/', incremento=8, lim_inf=10, lim_sup=520)
